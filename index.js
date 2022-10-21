@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
+const productRoute = require("./src/router/product");
 
 dotenv.config();
 //CONNECT DB
@@ -16,9 +17,7 @@ app.use(bodyParser.json({ limit: "50mb" }));
 app.use(cors());
 app.use(morgan("common"));
 
-app.get("/", (req, res) => {
-  res.status(200).json("hello");
-});
+app.use("/v1/product", productRoute);
 
 app.listen(8000, () => {
   console.log("server is running...");
