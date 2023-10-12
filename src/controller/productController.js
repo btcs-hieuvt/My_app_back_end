@@ -19,7 +19,7 @@ const productController = {
 
   getAllProduct: async (req, res) => {
     try {
-      const products = await Product.find();
+      const products = await Product.find().sort({ createdAt: -1 });
       res.status(200).json(products);
     } catch (error) {
       res.status(500).json(error);
@@ -56,6 +56,31 @@ const productController = {
       );
       await Product.findByIdAndDelete(productId);
       res.status(200).json("Deleted succsessfully!");
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  },
+  a: async (req, res) => {
+    const k = req.query.k;
+    res.status(200).json(k);
+  },
+
+  searchProduct: async (req, res) => {
+    try {
+      const k = req.query.k;
+
+      // Tạo biểu thức chính quy không phân biệt chữ hoa chữ thường
+      const regex = new RegExp(k, "i");
+
+      // Tìm kiếm sản phẩm theo từ khóa
+      const searchResult = await Product.find({
+        $or: [
+          { productName: { $regex: regex } },
+          { description: { $regex: regex } },
+        ],
+      });
+
+      res.status(200).json(searchResult);
     } catch (error) {
       res.status(500).json(error);
     }
